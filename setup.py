@@ -983,7 +983,7 @@ class PyBuildExt(build_ext):
         try:
             # See whether there is a Sleepycat header in the standard
             # search path.
-            for d in inc_dirs + db_inc_paths:
+            for d in ["%s/include" % os.environ["DB4_ROOT"]]:
                 f = os.path.join(d, "db.h")
 
                 if host_platform == 'darwin' and is_macosx_sdk_path(d):
@@ -1092,7 +1092,7 @@ class PyBuildExt(build_ext):
             missing.append('_bsddb')
 
         # The sqlite interface
-        sqlite_setup_debug = False   # verbose debug prints from this script?
+        sqlite_setup_debug = True   # verbose debug prints from this script?
 
         # We hunt for #define SQLITE_VERSION "n.n.n"
         # We need to find >= sqlite version 3.0.8

@@ -713,6 +713,9 @@ extern int fdatasync(int);
 #endif
 
 #ifdef _PY_PORT_CTYPE_UTF8_ISSUE
+
+#ifndef __cplusplus
+
 #include <ctype.h>
 #include <wctype.h>
 #undef isalnum
@@ -729,7 +732,11 @@ extern int fdatasync(int);
 #define tolower(c) towlower(btowc(c))
 #undef toupper
 #define toupper(c) towupper(btowc(c))
-#endif
+
+#endif /* !__cplusplus */
+	   
+
+#endif /* _PY_PORT_CTYPE_UTF8_ISSUE */
 
 
 /* Declarations for symbol visibility.

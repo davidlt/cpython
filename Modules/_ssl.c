@@ -131,6 +131,7 @@ static int check_socket_and_wait_for_timeout(PySocketSockObject *s,
                                              int writing);
 static PyObject *PySSL_peercert(PySSLObject *self, PyObject *args);
 static PyObject *PySSL_cipher(PySSLObject *self);
+static PyObject *PySSL_dont_insert_empty_fragments(PySSLObject *self);
 
 #define PySSLObject_Check(v)    (Py_TYPE(v) == &PySSL_Type)
 
@@ -1097,6 +1098,14 @@ static PyObject *PySSL_cipher (PySSLObject *self) {
     return NULL;
 }
 
+static PyObject *PySSL_dont_insert_empty_fragments(PySSLObject *self)
+{
+    if (self->ssl == NULL)
+        return Py_None;
+    SSL_set_options(self->ssl, SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS);
+    Py_RETURN_NONE;
+}
+
 static void PySSL_dealloc(PySSLObject *self)
 {
     if (self->peer_cert)        /* Possible not to have one? */
@@ -1469,6 +1478,7 @@ static PyMethodDef PySSLMethods[] = {
     {"cipher", (PyCFunction)PySSL_cipher, METH_NOARGS},
     {"shutdown", (PyCFunction)PySSL_SSLshutdown, METH_NOARGS,
      PySSL_SSLshutdown_doc},
+    {"dont_insert_empty_fragments", (PyCFunction)PySSL_dont_insert_empty_fragments, METH_NOARGS},
     {NULL, NULL}
 };
 

@@ -187,6 +187,13 @@ class SSLSocket(socket):
         else:
             return self._sslobj.cipher()
 
+    def dont_insert_empty_fragments(self):
+
+        if not self._sslobj:
+            return None
+        else:
+            return self._sslobj.dont_insert_empty_fragments()
+
     def send(self, data, flags=0):
         if self._sslobj:
             if flags != 0:

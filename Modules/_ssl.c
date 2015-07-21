@@ -244,7 +244,7 @@ static int check_socket_and_wait_for_timeout(PySocketSockObject *s,
                                              int writing);
 static PyObject *PySSL_peercert(PySSLSocket *self, PyObject *args);
 static PyObject *PySSL_cipher(PySSLSocket *self);
-static PyObject *PySSL_dont_insert_empty_fragments(PySSLObject *self);
+static PyObject *PySSL_dont_insert_empty_fragments(PySSLSocket *self);
 
 #define PySSLContext_Check(v)   (Py_TYPE(v) == &PySSLContext_Type)
 #define PySSLSocket_Check(v)    (Py_TYPE(v) == &PySSLSocket_Type)
@@ -1396,7 +1396,7 @@ static PyObject *PySSL_cipher (PySSLSocket *self) {
     return NULL;
 }
 
-static PyObject *PySSL_dont_insert_empty_fragments(PySSLObject *self)
+static PyObject *PySSL_dont_insert_empty_fragments(PySSLSocket *self)
 {
     if (self->ssl == NULL)
         return Py_None;

@@ -40,7 +40,7 @@ def add_dir_to_list(dirlist, dir):
     1) 'dir' is not already in 'dirlist'
     2) 'dir' actually exists, and is a directory."""
     if dir is not None and os.path.isdir(dir) and dir not in dirlist:
-        dirlist.insert(0, dir)
+        dirlist.append(dir)
 
 def macosx_sdk_root():
     """
@@ -439,9 +439,6 @@ class PyBuildExt(build_ext):
 
     def detect_modules(self):
         # Ensure that /usr/local is always used
-        if not cross_compiling:
-            add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
-            add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
         if cross_compiling:
             self.add_gcc_paths()
         self.add_multiarch_paths()
@@ -703,7 +700,7 @@ class PyBuildExt(build_ext):
             missing.extend(['imageop'])
 
         # readline
-        do_readline = self.compiler.find_library_file(lib_dirs, 'readline')
+        do_readline = self.compiler.find_library_file(["%s/lib" % os.environ['READLINE_ROOT']], 'readline')
         readline_termcap_library = ""
         curses_library = ""
         # Determine if readline is already linked against curses or tinfo.
@@ -725,11 +722,11 @@ class PyBuildExt(build_ext):
         # use the same library for the readline and curses modules.
         if 'curses' in readline_termcap_library:
             curses_library = readline_termcap_library
-        elif self.compiler.find_library_file(lib_dirs, 'ncursesw'):
+        elif self.compiler.find_library_file(["%s/lib" % os.environ['NCURSES_ROOT']], 'ncursesw'):
             curses_library = 'ncursesw'
-        elif self.compiler.find_library_file(lib_dirs, 'ncurses'):
+        elif self.compiler.find_library_file(["%s/lib" % os.environ['NCURSES_ROOT']], 'ncurses'):
             curses_library = 'ncurses'
-        elif self.compiler.find_library_file(lib_dirs, 'curses'):
+        elif self.compiler.find_library_file(["%s/lib" % os.environ['NCURSES_ROOT']], 'curses'):
             curses_library = 'curses'
 
         if host_platform == 'darwin':
@@ -885,7 +882,7 @@ class PyBuildExt(build_ext):
         # a release.  Most open source OSes come with one or more
         # versions of BerkeleyDB already installed.
 
-        max_db_ver = (5, 3)
+        max_db_ver = (6, 0)
         min_db_ver = (4, 3)
         db_setup_debug = True   # verbose debug prints from this script?
 

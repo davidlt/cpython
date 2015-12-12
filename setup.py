@@ -2055,7 +2055,7 @@ class PyBuildExt(build_ext):
             # in /usr/include/ffi
             inc_dirs.append('/usr/include/ffi')
 
-        ffi_inc = [sysconfig.get_config_var("LIBFFI_INCLUDEDIR")]
+        ffi_inc = ["{0}/include".format(os.environ['LIBFFI_ROOT'])]
         if not ffi_inc or ffi_inc[0] == '':
             ffi_inc = find_file('ffi.h', [], inc_dirs)
         if ffi_inc is not None:
@@ -2070,8 +2070,9 @@ class PyBuildExt(build_ext):
                     break
         ffi_lib = None
         if ffi_inc is not None:
+            ffi_lib_dirs = ["{0}/lib64".format(os.environ['LIBFFI_ROOT'])]
             for lib_name in ('ffi_convenience', 'ffi_pic', 'ffi'):
-                if (self.compiler.find_library_file(lib_dirs, lib_name)):
+                if (self.compiler.find_library_file(ffi_lib_dirs, lib_name)):
                     ffi_lib = lib_name
                     break
 

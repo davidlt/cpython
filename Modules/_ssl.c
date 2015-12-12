@@ -244,6 +244,7 @@ static int check_socket_and_wait_for_timeout(PySocketSockObject *s,
                                              int writing);
 static PyObject *PySSL_peercert(PySSLSocket *self, PyObject *args);
 static PyObject *PySSL_cipher(PySSLSocket *self);
+static PyObject *PySSL_dont_insert_empty_fragments(PySSLSocket *self);
 
 #define PySSLContext_Check(v)   (Py_TYPE(v) == &PySSLContext_Type)
 #define PySSLSocket_Check(v)    (Py_TYPE(v) == &PySSLSocket_Type)
@@ -1394,6 +1395,14 @@ static PyObject *PySSL_cipher (PySSLSocket *self) {
     return NULL;
 }
 
+static PyObject *PySSL_dont_insert_empty_fragments(PySSLSocket *self)
+{
+    if (self->ssl == NULL)
+        return Py_None;
+    SSL_set_options(self->ssl, SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS);
+    Py_RETURN_NONE;
+}
+
 static PyObject *PySSL_version(PySSLSocket *self)
 {
     const char *version;
@@ -1932,6 +1941,7 @@ static PyMethodDef PySSLMethods[] = {
     {"compression", (PyCFunction)PySSL_compression, METH_NOARGS},
     {"shutdown", (PyCFunction)PySSL_SSLshutdown, METH_NOARGS,
      PySSL_SSLshutdown_doc},
+    {"dont_insert_empty_fragments", (PyCFunction)PySSL_dont_insert_empty_fragments, METH_NOARGS},
 #if HAVE_OPENSSL_FINISHED
     {"tls_unique_cb", (PyCFunction)PySSL_tls_unique_cb, METH_NOARGS,
      PySSL_tls_unique_cb_doc},

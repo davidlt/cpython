@@ -700,7 +700,7 @@ class PyBuildExt(build_ext):
             missing.extend(['imageop'])
 
         # readline
-        do_readline = self.compiler.find_library_file(["%s/lib" % os.environ['READLINE_ROOT']], 'readline')
+        do_readline = self.compiler.find_library_file(lib_dirs, 'readline')
         readline_termcap_library = ""
         curses_library = ""
         # Determine if readline is already linked against curses or tinfo.
